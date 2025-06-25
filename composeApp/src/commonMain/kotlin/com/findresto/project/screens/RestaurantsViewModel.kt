@@ -45,13 +45,9 @@ class RestaurantsViewModel(private val api: ApiManager) : ViewModel() {
                 is GeolocatorResult.Success -> {
 
                     val currentLocation = result.data
-                    /*fetchRestaurants(
+                    fetchRestaurants(
                         currentLocation.coordinates.latitude,
                         currentLocation.coordinates.longitude
-                    )*/
-                    fetchRestaurants(
-                        null,
-                        null
                     )
                 }
 
