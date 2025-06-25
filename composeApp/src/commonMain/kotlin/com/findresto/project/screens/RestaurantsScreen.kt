@@ -156,7 +156,7 @@ fun RestaurantCardItem(restaurant: RestaurantModel) {
             )
             Spacer(Modifier.height(12.dp))
             Text(text = restaurant.name, color = Color.Black, fontSize = 22.sp)
-            Text(text = restaurant.city, color = Color.Gray, fontSize = 20.sp, fontWeight = FontWeight.Light)
+            Text(text = "${restaurant.city} ${restaurant.latitude},${restaurant.longitude}", color = Color.Gray, fontSize = 17.sp, fontWeight = FontWeight.Light)
             Spacer(Modifier.height(6.dp))
             Text(
                 text = restaurant.description,
