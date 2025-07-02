@@ -34,8 +34,8 @@ class RestaurantsRepository(
         // my current location in casablanca
         //33.5854580006882, -7.6393468700222575
         return data.filter { restaurant ->
-            //isIn3km(lat, lon, restaurant.latitude, restaurant.longitude, radiusKm)
-            isIn3km(33.5854580006882, -7.6393468700222575, restaurant.latitude, restaurant.longitude, radiusKm)
+            isIn3km(lat, lon, restaurant.latitude, restaurant.longitude, radiusKm)
+            //isIn3km(33.5854580006882, -7.6393468700222575, restaurant.latitude, restaurant.longitude, radiusKm)
         }
     }
 
