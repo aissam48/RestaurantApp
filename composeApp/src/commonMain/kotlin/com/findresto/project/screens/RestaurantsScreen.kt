@@ -57,27 +57,22 @@ fun RestaurantsScreen(
 
         when (val state = uiState) {
             is RestaurantsUiState.Loading -> {
-                println("currentLocation Loading")
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
 
             is RestaurantsUiState.Success -> {
-                println("currentLocation Success")
-                println("currentLocation ${state.data}")
                 DataView(state.data, viewModel)
             }
 
             is RestaurantsUiState.Error -> {
-                println("currentLocation Error")
                 ErrorView(state.error.message) {
                     viewModel.refresh()
                 }
             }
 
             else -> {
-                println("currentLocation else")
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }

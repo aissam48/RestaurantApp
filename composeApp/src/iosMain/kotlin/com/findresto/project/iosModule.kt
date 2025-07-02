@@ -6,6 +6,5 @@ import org.koin.dsl.module
 
 
 val iosModule = module {
-    println("fffffffff 1")
     single<LocationProvider> { IosLocationProvider() }
 }

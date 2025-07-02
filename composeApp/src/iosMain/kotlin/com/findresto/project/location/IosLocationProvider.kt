@@ -14,7 +14,6 @@ import kotlin.coroutines.resume
 
 class IosLocationProvider : LocationProvider, KoinComponent {
 
-
     private val viewModel: RestaurantsViewModel by lazy { get<RestaurantsViewModel>() }
 
     private val locationManager = CLLocationManager()
@@ -28,32 +27,9 @@ class IosLocationProvider : LocationProvider, KoinComponent {
 
         return suspendCancellableCoroutine { continuation ->
 
-            // Assign continuation callback to delegate
             delegate.continuation = { locationData ->
                 println("Location result: $locationData")
                 continuation.resume(locationData)
-            }
-
-            when (locationManager.authorizationStatus()) {
-                kCLAuthorizationStatusAuthorizedAlways,
-                kCLAuthorizationStatusAuthorizedWhenInUse -> {
-                    locationManager.startUpdatingLocation()
-                }
-
-                kCLAuthorizationStatusNotDetermined -> {
-                    locationManager.requestWhenInUseAuthorization()
-                }
-
-                kCLAuthorizationStatusDenied,
-                kCLAuthorizationStatusRestricted -> {
-                    continuation.resume(null)
-                    return@suspendCancellableCoroutine
-                }
-
-                else -> {
-                    continuation.resume(null)
-                    return@suspendCancellableCoroutine
-                }
             }
 
             continuation.invokeOnCancellation {
@@ -105,6 +81,7 @@ class IosLocationProvider : LocationProvider, KoinComponent {
                 kCLAuthorizationStatusAuthorizedWhenInUse -> {
                     println("granted")
                     viewModel.onPermissionResult(true)
+                    manager.startUpdatingLocation()
                 }
 
                 kCLAuthorizationStatusNotDetermined -> {

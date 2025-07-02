@@ -14,7 +14,9 @@ class AndroidLocationProvider(private val context: Context) : LocationProvider {
 
     override suspend fun getCurrentLocation(): LocationData =
         suspendCancellableCoroutine { cont ->
+
             val fused = LocationServices.getFusedLocationProviderClient(context)
+
             if (ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -29,13 +31,12 @@ class AndroidLocationProvider(private val context: Context) : LocationProvider {
             }
             fused.lastLocation
                 .addOnSuccessListener {
-                    if (it != null)
+                    if (it != null) {
                         cont.resume(LocationData(it.latitude, it.longitude))
-                    else
-                        cont.resumeWithException(Exception("Location null"))
+                    }
                 }
                 .addOnFailureListener {
-                    cont.resumeWithException(it)
+                    cont.resume(LocationData(null, null))
                 }
         }
 }
