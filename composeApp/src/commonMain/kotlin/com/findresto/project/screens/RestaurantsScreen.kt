@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,8 +41,10 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.findresto.project.network.models.RestaurantModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun RestaurantsScreen(
     navController: NavHostController,
@@ -54,22 +57,27 @@ fun RestaurantsScreen(
 
         when (val state = uiState) {
             is RestaurantsUiState.Loading -> {
+                println("currentLocation Loading")
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
 
             is RestaurantsUiState.Success -> {
+                println("currentLocation Success")
+                println("currentLocation ${state.data}")
                 DataView(state.data, viewModel)
             }
 
             is RestaurantsUiState.Error -> {
-                ErrorView(state.error.message){
+                println("currentLocation Error")
+                ErrorView(state.error.message) {
                     viewModel.refresh()
                 }
             }
 
             else -> {
+                println("currentLocation else")
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
@@ -81,26 +89,10 @@ fun RestaurantsScreen(
 
 @Composable
 fun DataView(data: List<RestaurantModel>, viewModel: RestaurantsViewModel) {
-    if (data.isEmpty()) {
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = "There is no restaurants in this area",
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-
-        return
-    }
 
     val searchByNameAndDescription = viewModel.search.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize().padding(start = 15.dp, end = 15.dp)) {
-
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
             singleLine = true,
@@ -123,17 +115,30 @@ fun DataView(data: List<RestaurantModel>, viewModel: RestaurantsViewModel) {
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(data) { item ->
-                RestaurantCardItem(item)
+        if (data.isEmpty()) {
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "No restaurants",
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(data) { item ->
+                    RestaurantCardItem(item)
+                }
             }
         }
-
-
     }
+
 }
 
 @Composable
@@ -156,7 +161,12 @@ fun RestaurantCardItem(restaurant: RestaurantModel) {
             )
             Spacer(Modifier.height(12.dp))
             Text(text = restaurant.name, color = Color.Black, fontSize = 22.sp)
-            Text(text = "${restaurant.city} ${restaurant.latitude},${restaurant.longitude}", color = Color.Gray, fontSize = 17.sp, fontWeight = FontWeight.Light)
+            Text(
+                text = "${restaurant.city} ${restaurant.latitude},${restaurant.longitude}",
+                color = Color.Gray,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Light
+            )
             Spacer(Modifier.height(6.dp))
             Text(
                 text = restaurant.description,

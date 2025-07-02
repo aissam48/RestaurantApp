@@ -36,6 +36,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.androidx.compose)
+
+            implementation("com.google.android.gms:play-services-location:21.0.1")
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -53,6 +56,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

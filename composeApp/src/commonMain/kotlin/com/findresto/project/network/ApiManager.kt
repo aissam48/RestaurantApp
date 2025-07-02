@@ -6,6 +6,7 @@ import com.findresto.project.resources.mockRestaurantsJson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -27,6 +28,7 @@ class ApiManager() {
         onSuccess: (List<RestaurantModel>) -> Unit,
         onFailure: (ErrorModel) -> Unit
     ){
+
             try {
 
                 // this if there is an api that provide list of restaurants
