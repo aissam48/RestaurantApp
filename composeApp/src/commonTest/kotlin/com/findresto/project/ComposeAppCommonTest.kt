@@ -15,6 +15,8 @@ import kotlin.test.assertEquals
 class ComposeAppCommonTest {
 
     private lateinit var viewModel: RestaurantsViewModel
+    private lateinit var repository: RestaurantsRepository
+
 
     @BeforeTest
     fun setUp() {
@@ -23,12 +25,12 @@ class ComposeAppCommonTest {
             override suspend fun getCurrentLocation() = null
         }
 
-        val repository = RestaurantsRepository(fakeApiManager, fakeLocationProvider)
+        repository = RestaurantsRepository(fakeApiManager, fakeLocationProvider)
         viewModel = RestaurantsViewModel(repository)
 
-        val restaurents = Json.decodeFromString<List<RestaurantModel>>(mockRestaurantsJson)
+        val restaurants = Json.decodeFromString<List<RestaurantModel>>(mockRestaurantsJson)
 
-        viewModel.filteredList.addAll(restaurents)
+        viewModel.filteredList.addAll(restaurants)
 
     }
 
@@ -49,6 +51,21 @@ class ComposeAppCommonTest {
 
         assertEquals(1, result.size)
         assertEquals("Le Gourmet Casablanca", result[0].name)
+    }
+
+    @Test
+    fun restaurantsIn3KM(){
+
+        // my current location in casablanca
+        //33.5854580006882, -7.6393468700222575
+        val lat = 33.5854580006882
+        val lon = -7.6393468700222575
+
+        val nearbyRestaurants = repository.filterNearbyRestaurants(viewModel.filteredList, lat, lon, 3.0)
+
+        println("nearbyRestaurants ${nearbyRestaurants.size}")
+        assertEquals(2, nearbyRestaurants.size)
+
     }
 
 
