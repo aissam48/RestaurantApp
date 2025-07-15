@@ -15,11 +15,17 @@ class RestaurantsRepository(
     suspend fun getCurrentLocation() = locationProvider.getCurrentLocation()
 
     suspend fun fetchRestaurants(
+        lat: Double?, lon: Double?,
         onSuccess: (List<RestaurantModel>) -> Unit,
         onFailure: (ErrorModel) -> Unit
     ) {
         api.fetchRestaurants({ data ->
-            onSuccess(data)
+            val finalList = if (lat != null && lon != null) {
+                filterNearbyRestaurants(data, lat, lon, radiusKm = 3.0)
+            } else {
+                data
+            }
+            onSuccess(finalList)
         }, { error ->
             onFailure(error)
         })
@@ -34,8 +40,14 @@ class RestaurantsRepository(
         // my current location in casablanca
         //33.5854580006882, -7.6393468700222575
         return data.filter { restaurant ->
-            isIn3km(lat, lon, restaurant.latitude, restaurant.longitude, radiusKm)
-            //isIn3km(33.5854580006882, -7.6393468700222575, restaurant.latitude, restaurant.longitude, radiusKm)
+            //isIn3km(lat, lon, restaurant.latitude, restaurant.longitude, radiusKm)
+            isIn3km(
+                33.5854580006882,
+                -7.6393468700222575,
+                restaurant.latitude,
+                restaurant.longitude,
+                radiusKm
+            )
         }
     }
 

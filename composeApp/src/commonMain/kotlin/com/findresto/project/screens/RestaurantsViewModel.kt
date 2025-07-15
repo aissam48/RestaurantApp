@@ -33,7 +33,7 @@ class RestaurantsViewModel(
     fun onPermissionResult(granted: Boolean) {
         if (granted) {
             askForCurrentLocation()
-        }else{
+        } else {
             fetchRestaurants(null, null)
 
         }
@@ -52,16 +52,10 @@ class RestaurantsViewModel(
 
             delay(3000)
 
-            repository.fetchRestaurants({ data ->
+            repository.fetchRestaurants(lat, lon, { data ->
                 filteredList.clear()
-                val finalList = if (lat != null && lon != null) {
-                    repository.filterNearbyRestaurants(data, lat, lon, radiusKm = 3.0)
-                } else {
-                    data
-                }
-
-                filteredList.addAll(finalList)
-                _uiState.value = RestaurantsUiState.Success(finalList)
+                filteredList.addAll(data)
+                _uiState.value = RestaurantsUiState.Success(data)
             }, { error ->
                 _uiState.value = RestaurantsUiState.Error(error)
 
@@ -73,8 +67,8 @@ class RestaurantsViewModel(
     fun setSearch(query: String) {
         _search.value = query
         val result = filteredList.filter {
-            it.name.contains(query, ignoreCase = true) ||
-                    it.description.contains(query, ignoreCase = true)
+            it.name.contains(query) ||
+                    it.description.contains(query)
         }
         _uiState.value = RestaurantsUiState.Success(result)
     }

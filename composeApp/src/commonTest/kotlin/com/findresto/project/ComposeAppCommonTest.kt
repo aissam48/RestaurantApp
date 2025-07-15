@@ -40,16 +40,21 @@ class ComposeAppCommonTest {
         val state = viewModel.uiState.value
         val result = (state as RestaurantsUiState.Success).data
 
+        println("result of list size ${result.size}")
         assertEquals(0, result.size)
     }
 
     @Test
     fun successTestSetSearchFiltersByNameAndDescription() {
         viewModel.setSearch("Le Gourmet")
+
         val state = viewModel.uiState.value
         val result = (state as RestaurantsUiState.Success).data
 
+        println("result of list size ${result.size}")
+
         assertEquals(1, result.size)
+
         assertEquals("Le Gourmet Casablanca", result[0].name)
     }
 
